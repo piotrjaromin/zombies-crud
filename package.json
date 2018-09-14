@@ -5,7 +5,7 @@
   "main": "bin/www",
   "scripts": {
     "start": "node bin/www",
-    "test-integration": "NODE_ENV=test mocha ./test-integration/.",
+    "test-integration": "NODE_ENV=test mocha ./test-integrations/.",
     "test": "NODE_ENV=test mocha  \"tests/**/*.test.js\"",
     "lint": "./node_modules/eslint/bin/eslint.js ."
   },
