@@ -1,0 +1,11 @@
+{
+    "port": "3001",
+    "market": {
+        "url" : "https://zombie-items-api.herokuapp.com/api/items",
+        "refreshIntervalMs" : 60000
+    },
+    "exchange" : {
+        "url" : "http://api.nbp.pl/api/exchangerates/tables/C/today/",
+        "validRates" : ["USD", "PLN", "EUR"]
+    }
+}
