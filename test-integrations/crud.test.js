@@ -11,10 +11,11 @@ const headers = {
 };
 
 describe('For crud on zombies should return', () => {
-
     let createdId;
 
-    const validZombie = { name: "Johny Dead"};
+    // assuming that this id always exist
+    const swordId = 1;
+    const validZombie = {name: 'Johny Dead'};
 
     it('bad request for empty object', () => {
         return axios.post(config.zombiesUrl, {}, {headers})
@@ -37,7 +38,7 @@ describe('For crud on zombies should return', () => {
         return axios.post(config.zombiesUrl, validZombie, {headers})
             .then( ({data, status}) => {
                 status.should.equal(HttpStatus.CREATED);
-                Object.keys(data).should.containDeep(['name', 'createdAt', 'items', 'id'])
+                Object.keys(data).should.containDeep(['name', 'createdAt', 'items', 'id']);
                 createdId = data.id;
             });
     });
@@ -65,7 +66,7 @@ describe('For crud on zombies should return', () => {
         const url = `${config.zombiesUrl}/${createdId}`;
         const newName = 'Mistery Boney';
 
-        const update = Object.assign({name: newName});
+        const update = {name: newName};
 
         return axios.put(url, update, {headers})
             .then( ({status}) => status.should.equal(HttpStatus.NO_CONTENT))
@@ -78,7 +79,6 @@ describe('For crud on zombies should return', () => {
     });
 
     it('not found for update of not existing zombie', () => {
-
         return axios.put(`${config.zombiesUrl}/some_random_url`, validZombie, {headers})
             .then( () => should.fail('For not existing owner test should return 404'))
             .catch( ( {response: {status}} ) => {
@@ -87,6 +87,46 @@ describe('For crud on zombies should return', () => {
             .catch(logTestError);
     });
 
+    it('add item to zombie', () => {
+        const url = `${config.zombiesUrl}/${createdId}/items/${swordId}`;
+
+        return axios.post(url, {}, {headers})
+            .then( ({status}) => status.should.equal(HttpStatus.NO_CONTENT));
+    });
+
+    it('added item should have price for different rates', () => {
+        const zombieUrl = `${config.zombiesUrl}/${createdId}`;
+        return axios.get(zombieUrl)
+            .then( ({data, status}) => {
+                status.should.equal(HttpStatus.OK);
+                console.log(data);
+                should.exist(data.items);
+
+                console.log(data.items);
+                data.items.should.have.length(1);
+
+                data.items[0].priceRates.should.have.keys(config.exchange.validRates);
+            })
+            .catch(logTestError);
+    });
+
+    it('allow to remove item from zombie', () => {
+        const url = `${config.zombiesUrl}/${createdId}/items/${swordId}`;
+
+        return axios.delete(url, {headers})
+            .then( ({status}) => status.should.equal(HttpStatus.NO_CONTENT));
+    });
+
+    it('get on items for zombie', () => {
+        const url = `${config.zombiesUrl}/${createdId}/items`;
+
+        return axios.get(url, {headers})
+            .then( ({data, status}) => {
+                status.should.equal(HttpStatus.OK);
+                should.exist(data.items);
+                data.items.should.have.length(0);
+            });
+    });
 
     it('delete existing zombie', () => {
         return axios.delete(`${config.zombiesUrl}/${createdId}`)

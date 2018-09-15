@@ -6,14 +6,16 @@ const config = require('config');
 const logger = require('simple-node-logger').createSimpleLogger();
 const cors = require('cors');
 
-logger.setLevel(process.env.LOG_LEVEL || 'info');
+logger.setLevel(process.env.LOG_LEVEL || 'debug');
 
 
+// starts whole application
 function initApp() {
     const app = express();
 
     // all origins allowed
     app.use(cors());
+
     app.use(bodyParser.json());
 
     // init business endpoints
