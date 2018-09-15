@@ -33,15 +33,15 @@ describe('Market cache should', () => {
     const cache = cacheFac.create(logger, config, httpClient, setInterval);
 
     it('should call market service', async () => {
-        should(await cache.get(sword.id)).deepEqual(sword);
-        should(await cache.get(trident.id)).undefined();
+        should(await cache.get(`${sword.id}`)).deepEqual(sword);
+        should(await cache.get(`${trident.id}`)).undefined();
     });
 
 
     it('should update market after setInterval callback is called', async () => {
         items.push(trident);
         refreshCacheCb();
-        should(await cache.get(sword.id)).deepEqual(sword);
-        should(await cache.get(trident.id)).deepEqual(trident);
+        should(await cache.get(`${sword.id}`)).deepEqual(sword);
+        should(await cache.get(`${trident.id}`)).deepEqual(trident);
     });
 });

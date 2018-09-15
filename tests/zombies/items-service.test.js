@@ -27,7 +27,15 @@ describe('items service should', () => {
 
     it('should calculate item price for rates in config', async () => {
         const svc = itemsSvcFac.create(logger, config, httpClient);
-        const items = await svc.calculateItemsPrices([sword, trident]);
+        const itemPrices = await svc.calculateItemsPrices([sword, trident]);
+
+        const items = itemPrices.items;
+
+        const priceSum = itemPrices.priceSum;
+
+        priceSum.PLN.should.equal(600);
+        priceSum.base.should.equal(300);
+        priceSum.USD.should.equal(1229.9999999999998);
 
         // assert sword prices are correct
         should.exist(items[0].priceRates);

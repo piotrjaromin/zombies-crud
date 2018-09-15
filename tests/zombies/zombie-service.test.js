@@ -19,7 +19,9 @@ describe('zombie service should', () => {
     const zombie = new Zombie({name: 'John blood'});
 
     const itemsSvc = {
-        calculateItemsPrices: (items) => Promise.resolve(items),
+        calculateItemsPrices: (items) => {
+            return Promise.resolve({items: items, priceSum: {}});
+        },
     };
     const marketSvc = {
         get: (id) => Promise.resolve(items[id]),
@@ -38,6 +40,7 @@ describe('zombie service should', () => {
         const gotZombie = await svc.get(zombie.id);
         should.exist(gotZombie);
         gotZombie.id.should.equal(zombie.id);
+        gotZombie.items.should.deepEqual([]);
     });
 
     it('allow to get list of zombie', async () => {
@@ -49,6 +52,7 @@ describe('zombie service should', () => {
         const gotZombie = zombies[0];
         should.exist(gotZombie);
         gotZombie.id.should.equal(zombie.id);
+        gotZombie.items.should.deepEqual([]);
     });
 
     it('error when trying to get not existing zombie', async () => {
@@ -79,6 +83,7 @@ describe('zombie service should', () => {
 
         should.exist(gotZombie);
         gotZombie.name.should.equal(name);
+        gotZombie.items.should.deepEqual([]);
     });
 
     it('allow to add item to zombie', async () => {
