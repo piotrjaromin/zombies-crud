@@ -74,8 +74,7 @@ describe('For crud on zombies should return', () => {
             .then( ({data, status}) => {
                 status.should.equal(HttpStatus.OK);
                 data.name.should.equal(update.name);
-            })
-            .catch(logTestError);
+            });
     });
 
     it('not found for update of not existing zombie', () => {
@@ -83,15 +82,14 @@ describe('For crud on zombies should return', () => {
             .then( () => should.fail('For not existing owner test should return 404'))
             .catch( ( {response: {status}} ) => {
                 status.should.equal(HttpStatus.NOT_FOUND);
-            })
-            .catch(logTestError);
+            });
     });
 
     it('add item to zombie', () => {
         const url = `${config.zombiesUrl}/${createdId}/items/${swordId}`;
 
         return axios.post(url, {}, {headers})
-            .then( ({status}) => status.should.equal(HttpStatus.NO_CONTENT));
+            .then( ({status}) => status.should.equal(HttpStatus.CREATED));
     });
 
     it('added item should have price for different rates', () => {
@@ -99,15 +97,12 @@ describe('For crud on zombies should return', () => {
         return axios.get(zombieUrl)
             .then( ({data, status}) => {
                 status.should.equal(HttpStatus.OK);
-                console.log(data);
                 should.exist(data.items);
-
-                console.log(data.items);
                 data.items.should.have.length(1);
 
+                should.exist(data.items[0].priceRates, 'Price rates does not exist on item, probably NPB returned 404');
                 data.items[0].priceRates.should.have.keys(config.exchange.validRates);
-            })
-            .catch(logTestError);
+            });
     });
 
     it('allow to remove item from zombie', () => {
@@ -123,8 +118,8 @@ describe('For crud on zombies should return', () => {
         return axios.get(url, {headers})
             .then( ({data, status}) => {
                 status.should.equal(HttpStatus.OK);
-                should.exist(data.items);
-                data.items.should.have.length(0);
+                should.exist(data);
+                data.should.have.length(0);
             });
     });
 
@@ -143,14 +138,4 @@ describe('For crud on zombies should return', () => {
                 data.should.have.length(0);
             });
     });
-
-    function logTestError(err) {
-        if (err.response ) {
-            console.log(`Request error, status ${err.response.status}, Body `, err.response.data);
-        } else {
-            console.log('Test error: ', err);
-        }
-
-        return Promise.reject(err);
-    }
 });
