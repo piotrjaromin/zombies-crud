@@ -6,7 +6,7 @@ const config = require('config');
 const logger = require('simple-node-logger').createSimpleLogger();
 const cors = require('cors');
 
-logger.setLevel(process.env.LOG_LEVEL || 'debug');
+logger.setLevel(process.env.LOG_LEVEL || 'info');
 
 
 // starts whole application
@@ -24,7 +24,7 @@ function initApp() {
     // error handler
     app.use(require('../lib/middlewares').errorMiddleware(logger));
 
-    const port = config.get('port');
+    const port = process.env.PORT || config.get('port');
     app.listen(port, () => logger.info('listening on port ', port));
 }
 
